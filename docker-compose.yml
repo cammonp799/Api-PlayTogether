@@ -4,30 +4,30 @@ services:
   # Service for the MySQL database
   db:
     image: mysql:8.0
-    container_name: mysql-container1
+    container_name: mysql-container
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: playTogetherApi
       MYSQL_USER: user
       MYSQL_PASSWORD: root
     ports:
-      - "3306:3306"  # Expose MySQL port
+      - "3306:3306"  # Expose MySQL port to the host
     volumes:
       - db_data:/var/lib/mysql  # Persist database data
 
-  # Service for the Node.js API
+  # Service for the Node.js API with Prisma
   api:
     build: .
     container_name: api-container
     ports:
-      - "4000:4000"  # Expose the API port
+      - "4000:4000"  # Expose the API port to the host
     depends_on:
       - db
     environment:
-      DB_HOST: db
-      DB_USER: user
-      DB_PASSWORD: root
-      DB_NAME: playTogetherApi
+      DATABASE_URL: "mysql://user:root@db:3306/playTogetherApi"  # Prisma connection string
+    volumes:
+      - .:/app
+    command: sh -c "npx prisma migrate deploy && npm start"  # Run migrations and start the app
 
 # Volume to persist database data
 volumes:
