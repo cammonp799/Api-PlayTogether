@@ -18,3 +18,13 @@ EXPOSE 4000
 
 # Start the application
 CMD ["node", "app.cjs"]
+
+# Question 3: Using the following command: docker run -d --name mysql-container1
+# -e MYSQL_ROOT_PASSWORD=root
+# -e MYSQL_DATABASE=playTogetherApi
+# -e MYSQL_USER=user
+# -e MYSQL_PASSWORD=root
+# -p 3306:3306
+# mysql:8.0.
+# Once launched, I received the ID confirming the start of my container.
+# Id = cca2fedeb9f8249a5fc69a33303ad47866a47e8ad0fb9f88135c131cc0ae20"
