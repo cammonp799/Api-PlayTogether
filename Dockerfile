@@ -1,20 +1,20 @@
 # Node.js 23
 FROM node:23.5.0
 
-# répertoire de travail
+# Set the working directory inside the container
 WORKDIR /app
 
-# Copie les fichiers package.json et package-lock.json
+# Copy package.json and package-lock.json files
 COPY package*.json ./
 
-# Installer les dépendances (depuis `/app`)
+# Install dependencies (from `/app`)
 RUN npm install
 
-# Copie tout le reste des fichiers (vers `/app`)
+# Copy the rest of the files (to `/app`)
 COPY . .
 
-# Exposer le port sur lequel l'app fonctionne
+# Expose the port on which the app runs
 EXPOSE 4000
 
-# Démarrer l'application
+# Start the application
 CMD ["node", "app.cjs"]
