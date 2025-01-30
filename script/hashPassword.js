@@ -1,5 +1,5 @@
 // Import required dependencies
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const { PrismaClient } = require('@prisma/client');
 
 // Initialize the Prisma client

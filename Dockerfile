@@ -1,4 +1,4 @@
-# Node.js 23
+# Use Node.js 23 base image
 FROM node:23.5.0
 
 # Set the working directory inside the container
@@ -7,10 +7,18 @@ WORKDIR /app
 # Copy package.json and package-lock.json files
 COPY package*.json ./
 
-# Install dependencies (from `/app`)
+# Install dependencies (from /app) and system packages needed for building bcrypt (or other native modules)
+RUN apt-get update && apt-get install -y \
+    build-essential \ python3
+
+
+# Install npm dependencies
 RUN npm install
 
-# Copy the rest of the files (to `/app`)
+# Run Prisma generate after installing dependencies
+RUN npx prisma generate
+
+# Copy the rest of the files (to /app)
 COPY . .
 
 # Expose the port on which the app runs
@@ -18,6 +26,7 @@ EXPOSE 4000
 
 # Start the application
 CMD ["node", "app.cjs"]
+
 
 # Question 3: Using the following command: docker run -d --name mysql-container1
 # -e MYSQL_ROOT_PASSWORD=root
