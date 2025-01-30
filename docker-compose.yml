@@ -1,22 +1,26 @@
 services:
-  # Service for the MySQL database
+  # MySQL Database Service
   db:
     image: mysql:8.0
     container_name: mysql-container-new
+    restart: always  # Automatically restart the container if it stops
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: playTogetherApi
       MYSQL_USER: user
       MYSQL_PASSWORD: root
-    ports:
-      - "3307:3306"  # Expose MySQL port to the host
+    expose:
+      - "3306"  # Expose MySQL internally
     volumes:
-      - db_data:/var/lib/mysql  # Persist database data
+      - db_data:/var/lib/mysql
+    networks:
+      - mynetwork  # Attach to the custom Docker network
 
-  # Service for the Node.js API with Prisma
+  # Node.js API Service
   api:
     build: .
     container_name: api-container
+    restart: always
     ports:
       - "4000:4000"  # Expose the API port to the host
     depends_on:
@@ -25,8 +29,15 @@ services:
       DATABASE_URL: "mysql://user:root@db:3306/playTogetherApi"  # Prisma connection string
     volumes:
       - .:/app
-    command: sh -c "npx prisma migrate deploy && npm start"  # Run migrations and start the app
+    command: sh -c "npx prisma migrate deploy && npm start"  # Run Prisma migrations and start the app
+    networks:
+      - mynetwork  # Attach to the same network as MySQL
 
 # Volume to persist database data
 volumes:
   db_data:
+
+# Define an isolated network for services
+networks:
+  mynetwork:
+    driver: bridge
