@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  # Service for the MySQL database
+  db:
+    image: mysql:8.0
+    container_name: mysql-container1
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: playTogetherApi
+      MYSQL_USER: user
+      MYSQL_PASSWORD: root
+    ports:
+      - "3306:3306"  # Expose MySQL port
+    volumes:
+      - db_data:/var/lib/mysql  # Persist database data
+
+  # Service for the Node.js API
+  api:
+    build: .
+    container_name: api-container
+    ports:
+      - "4000:4000"  # Expose the API port
+    depends_on:
+      - db
+    environment:
+      DB_HOST: db
+      DB_USER: user
+      DB_PASSWORD: root
+      DB_NAME: playTogetherApi
+
+# Volume to persist database data
+volumes:
+  db_data:
